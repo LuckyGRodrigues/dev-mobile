@@ -24,17 +24,17 @@ export function LoginForm({ onSubmit, loading = false }: LoginFormProps) {
     >
       <View style={styles.form}>
         <InputWithLabel
-          label="E-mail"
+          label=""
           value={email}
           onChangeText={setEmail}
           placeholder="seu@email.com"
           keyboardType="email-address"
         />
         <InputWithLabel
-          label="Senha"
+          label=""
           value={password}
           onChangeText={setPassword}
-          placeholder="••••••••"
+          placeholder="Sua senha"
           secureTextEntry
         />
         <Button
@@ -59,5 +59,6 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 8,
+    backgroundColor: '#ff5c00',
   },
 });
