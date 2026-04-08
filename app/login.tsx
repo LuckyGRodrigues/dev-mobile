@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   titleBox: {
-    backgroundColor: '#000000',
+    backgroundColor: '#0d0d0d',
     borderRadius: 20,
     paddingHorizontal: 24,
     paddingVertical: 12,
