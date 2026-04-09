@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 
-import { Button } from '@/components/atoms/Button';
 import { Input } from '@/components/atoms/Input';
 
 export type AddTaskFormProps = {
@@ -21,17 +20,12 @@ export function AddTaskForm({ onSubmit }: AddTaskFormProps) {
       <Input
         value={title}
         onChangeText={setTitle}
-        placeholder="Nova tarefa..."
+        placeholder="Pesquisa por quadras, esportes ou locais"
+        rightIconName="search"
         returnKeyType="done"
         onSubmitEditing={handleSubmit}
         autoCapitalize="sentences"
         style={styles.input}
-      />
-      <Button
-        title="Adicionar"
-        onPress={handleSubmit}
-        disabled={!title.trim()}
-        style={styles.button}
       />
     </View>
   );
@@ -43,9 +37,6 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '100%',
-  },
-  button: {
-    alignSelf: 'stretch',
-    minHeight: 48,
+    backgroundColor: '#fff',
   },
 });

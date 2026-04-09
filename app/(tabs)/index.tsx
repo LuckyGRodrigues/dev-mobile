@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, Image } from 'react-native';
+import { View, StyleSheet, ScrollView, Image, TextInput } from 'react-native';
+
+import { Ionicons } from '@expo/vector-icons';
 
 import { AppText } from '@/components/atoms/AppText';
 import { Button } from '@/components/atoms/Button';
@@ -27,6 +29,7 @@ const courts = [
 
 function HomeScreenContent() {
   const cardBackground = useThemeColor({ light: '#edf7ff', dark: '#1f2937' }, 'background');
+  const [search, setSearch] = React.useState('');
 
   return (
     <ThemedView style={styles.container}>
@@ -34,9 +37,16 @@ function HomeScreenContent() {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.section}>
           <AppText variant="subtitle">Quadras disponíveis</AppText>
-          <AppText variant="body" style={styles.paragraph}>
-            Veja as quadras que ainda estão livres e entre em contato para reservar o horário.
-          </AppText>
+          <View style={styles.searchContainer}>
+            <TextInput
+              value={search}
+              onChangeText={setSearch}
+              placeholder="Pesquisar quadra"
+              placeholderTextColor="#8b8b8b"
+              style={styles.searchInput}
+            />
+            <Ionicons name="search" size={18} color="#5f5f5f" style={styles.searchIcon} />
+          </View>
         </View>
 
         {courts.map((court) => (
@@ -86,9 +96,25 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: 16,
   },
-  paragraph: {
-    marginTop: 8,
-    opacity: 0.9,
+  searchContainer: {
+    marginTop: 10,
+    backgroundColor: '#f6f6f6',
+    borderRadius: 12,
+    minHeight: 46,
+    paddingLeft: 14,
+    paddingRight: 42,
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  searchInput: {
+    fontSize: 15,
+    color: '#1f2937',
+    paddingVertical: 10,
+  },
+  searchIcon: {
+    position: 'absolute',
+    right: 14,
+    top: 14,
   },
   card: {
     borderRadius: 18,

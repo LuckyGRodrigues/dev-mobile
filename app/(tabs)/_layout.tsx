@@ -37,8 +37,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="menu"
         options={{
-          title: 'Menu',
-          tabBarIcon: ({ color }) => <MaterialIcons name="menu" size={26} color={color} />,
+          title: 'Perfil',
+          tabBarIcon: ({ color }) => <MaterialIcons name="person" size={26} color={color} />,
         }}
       />
       <Tabs.Screen

@@ -26,7 +26,7 @@ export function TaskList({ tasks, onToggle, onDelete, isLoading }: TaskListProps
     return (
       <View style={styles.placeholder}>
         <AppText variant="body" style={styles.placeholderText}>
-          Nenhuma tarefa. Adicione uma acima.
+          Nenhuma quadra disponível por enquanto.
         </AppText>
       </View>
     );

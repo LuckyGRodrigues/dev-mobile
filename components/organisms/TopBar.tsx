@@ -6,7 +6,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { AppText } from '@/components/atoms/AppText';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
-const APP_TITLE = 'Exemplo';
+const APP_TITLE = 'SportHub';
 
 export type TopBarProps = {
   onNotificationsPress?: () => void;
