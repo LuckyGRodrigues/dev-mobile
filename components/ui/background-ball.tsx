@@ -1,10 +1,10 @@
 import React from 'react';
-import { Image, StyleSheet, type ImageStyle, type StyleProp } from 'react-native';
+import { Image, StyleSheet, View, type ImageStyle, type StyleProp } from 'react-native';
 
 type BackgroundBallProps = {
   size?: number;
-  top?: number | string;
-  right?: number;
+  top?: ImageStyle['top'];
+  right?: ImageStyle['right'];
   opacity?: number;
   translateY?: number;
   style?: StyleProp<ImageStyle>;
@@ -19,10 +19,8 @@ export function BackgroundBall({
   style,
 }: BackgroundBallProps) {
   return (
-    <Image
-      source={require('@/assets/images/boletaVolei.jpg')}
+    <View
       pointerEvents="none"
-      resizeMode="cover"
       style={[
         styles.ball,
         {
@@ -33,10 +31,17 @@ export function BackgroundBall({
           right,
           opacity,
           transform: [{ translateY }],
+          overflow: 'hidden',
         },
         style,
       ]}
-    />
+    >
+      <Image
+        source={require('@/assets/images/boletaVolei.jpg')}
+        resizeMode="cover"
+        style={StyleSheet.absoluteFill}
+      />
+    </View>
   );
 }
 
