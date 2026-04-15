@@ -1,13 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Image, View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system/legacy';
 
 import { AppText } from '@/components/atoms/AppText';
 import { Input } from '@/components/atoms/Input';
 import { TopBar } from '@/components/organisms/TopBar';
 import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@/contexts/AuthContext';
+
+const PROFILE_STORAGE_KEY = '@sporthub:profile';
+
+type ProfileData = {
+  name: string;
+  cpf: string;
+  phone: string;
+  photoUri: string | null;
+};
+
+function getFileExtension(uri: string) {
+  const match = uri.match(/\.([a-zA-Z0-9]+)(?:\?.*)?$/);
+
+  return match?.[1] ?? 'jpg';
+}
+
+function isPersistedPhotoUri(uri: string) {
+  return Boolean(FileSystem.documentDirectory && uri.startsWith(FileSystem.documentDirectory));
+}
 
 export default function MenuScreen() {
   const router = useRouter();
@@ -16,11 +37,36 @@ export default function MenuScreen() {
   const [cpf, setCpf] = useState('');
   const [phone, setPhone] = useState('');
   const [photoUri, setPhotoUri] = useState<string | null>(null);
+  const [savedPhotoUri, setSavedPhotoUri] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const storedProfile = await AsyncStorage.getItem(PROFILE_STORAGE_KEY);
+
+        if (!storedProfile) {
+          return;
+        }
+
+        const parsedProfile = JSON.parse(storedProfile) as ProfileData;
+
+        setName(parsedProfile.name ?? '');
+        setCpf(parsedProfile.cpf ?? '');
+        setPhone(parsedProfile.phone ?? '');
+        setPhotoUri(parsedProfile.photoUri ?? null);
+        setSavedPhotoUri(parsedProfile.photoUri ?? null);
+      } catch {
+        Alert.alert('Erro', 'Não foi possível carregar os dados do perfil.');
+      }
+    };
+
+    void loadProfile();
+  }, []);
 
   const handleEditPhoto = async () => {
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        mediaTypes: ['images'],
         allowsEditing: true,
         aspect: [1, 1],
         quality: 0.8,
@@ -37,8 +83,47 @@ export default function MenuScreen() {
     }
   };
 
-  const handleSave = () => {
-    // Placeholder for future save action.
+  const persistPhoto = async (currentPhotoUri: string) => {
+    if (!FileSystem.documentDirectory) {
+      return currentPhotoUri;
+    }
+
+    if (isPersistedPhotoUri(currentPhotoUri)) {
+      return currentPhotoUri;
+    }
+
+    const extension = getFileExtension(currentPhotoUri);
+    const destinationUri = `${FileSystem.documentDirectory}profile-photo.${extension}`;
+
+    if (savedPhotoUri && savedPhotoUri !== destinationUri) {
+      await FileSystem.deleteAsync(savedPhotoUri, { idempotent: true });
+    }
+
+    await FileSystem.deleteAsync(destinationUri, { idempotent: true });
+    await FileSystem.copyAsync({ from: currentPhotoUri, to: destinationUri });
+
+    return destinationUri;
+  };
+
+  const handleSave = async () => {
+    try {
+      const nextPhotoUri = photoUri ? await persistPhoto(photoUri) : null;
+
+      const profileData: ProfileData = {
+        name,
+        cpf,
+        phone,
+        photoUri: nextPhotoUri,
+      };
+
+      await AsyncStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profileData));
+      setPhotoUri(nextPhotoUri);
+      setSavedPhotoUri(nextPhotoUri);
+
+      Alert.alert('Dados salvos', 'Seu perfil foi salvo com sucesso.');
+    } catch {
+      Alert.alert('Erro ao salvar', 'Não foi possível salvar os dados do perfil.');
+    }
   };
 
   const handleLogout = () => {
@@ -71,21 +156,21 @@ export default function MenuScreen() {
               value={name}
               onChangeText={setName}
               placeholder="Nome"
-              style={styles.input}
+              style={[styles.input, styles.inputText]}
             />
             <Input
               value={cpf}
               onChangeText={setCpf}
               placeholder="CPF"
               keyboardType="numeric"
-              style={styles.input}
+              style={[styles.input, styles.inputText]}
             />
             <Input
               value={phone}
               onChangeText={setPhone}
               placeholder="Número de telefone"
               keyboardType="phone-pad"
-              style={styles.input}
+              style={[styles.input, styles.inputText]}
             />
           </View>
           <View style={styles.footer}>
@@ -155,6 +240,9 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     backgroundColor: '#fff',
+  },
+  inputText: {
+    color: '#000000',
   },
   footer: {
     marginTop: 'auto',
