@@ -7,6 +7,7 @@ import { AppText } from '@/components/atoms/AppText';
 import { Button } from '@/components/atoms/Button';
 import { TopBar } from '@/components/organisms/TopBar';
 import { ThemedView } from '@/components/themed-view';
+import { BackgroundBall } from '@/components/ui/background-ball';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 const courts = [
@@ -33,6 +34,7 @@ function HomeScreenContent() {
 
   return (
     <ThemedView style={styles.container}>
+      <BackgroundBall />
       <TopBar onNotificationsPress={() => {}} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.section}>

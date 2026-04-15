@@ -9,6 +9,7 @@ import { AppText } from '@/components/atoms/AppText';
 import { Input } from '@/components/atoms/Input';
 import { TopBar } from '@/components/organisms/TopBar';
 import { ThemedView } from '@/components/themed-view';
+import { BackgroundBall } from '@/components/ui/background-ball';
 import { useAuth } from '@/contexts/AuthContext';
 
 const PROFILE_STORAGE_KEY = '@sporthub:profile';
@@ -133,6 +134,7 @@ export default function MenuScreen() {
 
   return (
     <ThemedView style={styles.container}>
+      <BackgroundBall />
       <TopBar onNotificationsPress={() => {}} />
       <ScrollView style={styles.content} contentContainerStyle={styles.scrollContent}>
         <View style={styles.section}>

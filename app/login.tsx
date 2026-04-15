@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
 import { LoginForm } from '@/components/molecules/LoginForm';
 import { useAuth } from '@/contexts/AuthContext';
+import { BackgroundBall } from '@/components/ui/background-ball';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -21,13 +22,7 @@ export default function LoginScreen() {
 
   return (
     <View style={[styles.background, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-
-      {/* Bola posicionada no centro-direita */}
-      <Image
-        source={require('@/assets/images/boletaVolei.jpg')}
-        style={styles.ballImage}
-        resizeMode="cover"
-      />
+      <BackgroundBall />
 
       {/* Logo no topo */}
       <View style={styles.header}>
@@ -53,15 +48,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#0d0d0d',
     justifyContent: 'space-between',
     paddingHorizontal: 24,
-  },
-  ballImage: {
-    position: 'absolute',
-    width: 360,
-    height: 360,
-    borderRadius: 180,
-    top: '20%',
-    right: -180,
-    opacity: 0.45,
   },
   overlay: {
     flex: 1,
