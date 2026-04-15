@@ -6,15 +6,12 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { AppText } from '@/components/atoms/AppText';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
-const APP_TITLE = 'SportHub';
-
 export type TopBarProps = {
   onNotificationsPress?: () => void;
 };
 
 export function TopBar({ onNotificationsPress }: TopBarProps) {
   const insets = useSafeAreaInsets();
-  const textColor = useThemeColor({}, 'text');
   const backgroundColor = useThemeColor({}, 'background');
   const iconColor = useThemeColor({}, 'icon');
 
@@ -30,7 +27,10 @@ export function TopBar({ onNotificationsPress }: TopBarProps) {
       ]}
     >
       <AppText variant="title" style={styles.title}>
-        {APP_TITLE}
+        <AppText variant="title" style={styles.accentLetter}>
+          S
+        </AppText>
+        portHub
       </AppText>
       <TouchableOpacity
         onPress={onNotificationsPress}
@@ -55,6 +55,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
+  },
+  accentLetter: {
+    color: '#FF8A00',
   },
   iconButton: {
     padding: 4,
