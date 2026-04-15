@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { Alert, Image, View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import * as ImagePicker from 'expo-image-picker';
 
 import { AppText } from '@/components/atoms/AppText';
 import { Input } from '@/components/atoms/Input';
@@ -13,11 +14,27 @@ export default function MenuScreen() {
   const { logout } = useAuth();
   const [name, setName] = useState('');
   const [cpf, setCpf] = useState('');
-  const [cep, setCep] = useState('');
   const [phone, setPhone] = useState('');
+  const [photoUri, setPhotoUri] = useState<string | null>(null);
 
-  const handleEditPhoto = () => {
-    // Placeholder for future edit photo action.
+  const handleEditPhoto = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets[0]?.uri) {
+        setPhotoUri(result.assets[0].uri);
+      }
+    } catch {
+      Alert.alert(
+        'Não foi possível abrir a galeria',
+        'Verifique as permissões do app e tente novamente.',
+      );
+    }
   };
 
   const handleSave = () => {
@@ -35,13 +52,19 @@ export default function MenuScreen() {
       <ScrollView style={styles.content} contentContainerStyle={styles.scrollContent}>
         <View style={styles.section}>
           <AppText variant="subtitle">Perfil</AppText>
-          <View style={styles.photoPlaceholder}>
-            <AppText variant="caption" style={styles.photoPlaceholderText}>
-              Foto
+          <TouchableOpacity onPress={handleEditPhoto} activeOpacity={0.85} style={styles.photoSection}>
+            <View style={styles.photoPlaceholder}>
+              {photoUri ? (
+                <Image source={{ uri: photoUri }} style={styles.photoImage} />
+              ) : (
+                <AppText variant="caption" style={styles.photoPlaceholderText}>
+                  Foto
+                </AppText>
+              )}
+            </View>
+            <AppText variant="subtitle" style={styles.editPhotoText}>
+              Editar foto perfil
             </AppText>
-          </View>
-          <TouchableOpacity onPress={handleEditPhoto} activeOpacity={0.8}>
-            <AppText variant="subtitle">Editar foto perfil</AppText>
           </TouchableOpacity>
           <View style={styles.form}>
             <Input
@@ -97,6 +120,9 @@ const styles = StyleSheet.create({
     padding: 20,
     flex: 1,
   },
+  photoSection: {
+    alignItems: 'center',
+  },
   photoPlaceholder: {
     width: 160,
     height: 160,
@@ -104,15 +130,22 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: 'rgba(0,0,0,0.18)',
     backgroundColor: '#fff',
-    alignSelf: 'center',
     marginTop: 14,
     marginBottom: 26,
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
+  },
+  photoImage: {
+    width: '100%',
+    height: '100%',
   },
   photoPlaceholderText: {
     opacity: 0.65,
     fontWeight: '600',
+  },
+  editPhotoText: {
+    color: '#f97316',
   },
   form: {
     gap: 20,
