@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, Image, TextInput } from 'react-native';
+import { useRouter } from 'expo-router';
 
 import { Ionicons } from '@expo/vector-icons';
 
@@ -13,22 +14,23 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 const courts = [
   {
     name: 'Quadra 1',
-    hours: ['08:00 – 09:00', '10:00 – 11:00', '14:00 – 15:00'],
+    location: { neighborhood: 'Centro', city: 'Chapecó' },
     image: require('@/assets/images/boletaVolei.jpg'),
   },
   {
     name: 'Quadra 2',
-    hours: ['09:00 – 10:00', '11:00 – 12:00', '15:00 – 16:00'],
+    location: { neighborhood: 'Efapi', city: 'Chapecó' },
     image: require('@/assets/images/boletaVolei.jpg'),
   },
   {
     name: 'Quadra 3',
-    hours: ['08:30 – 09:30', '12:00 – 13:00', '17:00 – 18:00'],
+    location: { neighborhood: 'Passo dos Fortes', city: 'Chapecó' },
     image: require('@/assets/images/boletaVolei.jpg'),
   },
 ];
 
 function HomeScreenContent() {
+  const router = useRouter();
   const cardBackground = useThemeColor({ light: '#edf7ff', dark: '#1f2937' }, 'background');
   const [search, setSearch] = React.useState('');
 
@@ -58,18 +60,21 @@ function HomeScreenContent() {
                 <AppText variant="subtitle" style={styles.cardTitle}>
                   {court.name}
                 </AppText>
-                <View style={styles.hoursList}>
-                  {court.hours.map((hour) => (
-                    <AppText key={hour} variant="body" style={styles.hourItem}>
-                      • {hour}
-                    </AppText>
-                  ))}
-                </View>
+                <AppText variant="body" style={styles.locationText}>
+                  {court.location.neighborhood} • {court.location.city}
+                </AppText>
                 <Button
-                  title="Entre em contato"
+                  title="Agendar"
                   variant="outline"
                   onPress={() => {
-                    // Substitua por ação real de contato
+                    router.push({
+                      pathname: '/agendar',
+                      params: {
+                        courtName: court.name,
+                        neighborhood: court.location.neighborhood,
+                        city: court.location.city,
+                      },
+                    });
                   }}
                   style={styles.contactButton}
                 />
@@ -139,11 +144,8 @@ const styles = StyleSheet.create({
   cardTitle: {
     marginBottom: 12,
   },
-  hoursList: {
-    gap: 8,
+  locationText: {
     marginBottom: 18,
-  },
-  hourItem: {
     opacity: 0.95,
   },
   courtImage: {
